@@ -22,17 +22,21 @@
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
       font-family: sans-serif;
       font-size: 14px;
+      display: none;
+    }
+    #details button {
       display: block;
-      Color: red;
-      Height: auto;
+      margin-top: 5px;
+      background: #ccc;
+      border: none;
+      padding: 5px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <div id="map"></div>
-  <div id="details">
-    <strong>Click a pin to see details</strong>
-  </div>
+  <div id="details"></div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
@@ -46,17 +50,21 @@
       .then(response => response.json())
       .then(events => {
         events.forEach(ev => {
-          const marker = L.marker([ev.lat, ev.lon]).addTo(map)
-            .bindPopup(`<b>${ev.name}</b>`);
-
+          const marker = L.marker([ev.lat, ev.lon]).addTo(map);
+          
           marker.on('click', function() {
             const details = document.getElementById('details');
             details.innerHTML = `
               <strong>${ev.name}</strong><br>
               Vibe: ${ev.vibe}<br>
-              <a href="${ev.link}" target="_blank">View More</a>
+              <a href="${ev.link}" target="_blank">View More</a><br>
+              <button id="closeDetails">Close</button>
             `;
             details.style.display = 'block';
+
+            document.getElementById('closeDetails').onclick = function() {
+              details.style.display = 'none';
+            };
           });
         });
       })
