@@ -87,7 +87,13 @@
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
 
-  const markerCluster = L.markerClusterGroup();
+  const markerCluster = L.markerClusterGroup({
+    spiderfyOnMaxZoom: true,
+    showCoverageOnHover: false,
+    zoomToBoundsOnClick: true,
+    maxClusterRadius: 40,
+    disableClusteringAtZoom: 17
+  });
   map.addLayer(markerCluster);
 
   const allMarkers = [];
@@ -101,14 +107,14 @@
             className: '',
             html: '📍',
             iconSize: [10, 10],
-            iconAnchor: [10, 10]
+            iconAnchor: [5, 5]
           })
         });
 
         marker.vibe = ev.vibe.toLowerCase();
         marker.name = ev.name.toLowerCase();
         marker.bindPopup(`<b>${ev.name}</b>`);
-        
+
         marker.on('click', function() {
           const details = document.getElementById('details');
           details.innerHTML = `
