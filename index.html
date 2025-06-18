@@ -6,11 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
     #map {
       height: 100vh;
       width: 100vw;
-      margin: 0;
-      padding: 0;
     }
     #details {
       position: absolute;
@@ -33,7 +35,7 @@
       padding: 5px;
       cursor: pointer;
     }
-     #vibeFilter {
+    #vibeFilter {
       position: absolute;
       top: 10px;
       left: 10px;
@@ -44,7 +46,8 @@
   </style>
 </head>
 <body>
-      <select id="vibeFilter">
+
+  <select id="vibeFilter">
     <option value="">Show All</option>
     <option value="jazz">Jazz</option>
     <option value="artsy">Artsy</option>
@@ -53,9 +56,10 @@
     <option value="trendy">Trendy</option>
     <option value="rustic">Rustic</option>
   </select>
+
   <div id="map"></div>
-  <div id="details"></div>
-  <strong>Click a pin to see details</strong>
+  <div id="details">
+    <strong>Click a pin to see details</strong>
   </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -66,22 +70,25 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
+    const markers = [];
+
     fetch('events.json')
       .then(response => response.json())
       .then(events => {
         events.forEach(ev => {
           const marker = L.marker([ev.lat, ev.lon], {
-  icon: L.divIcon({
-    className: '',
-    html: '📍',
-    iconSize: [30, 30],
-    iconAnchor: [10, 10]
-  })
-}).addTo(map);
-          
-  marker.vibe = ev.vibe.toLowerCase();
-      markers.push(marker);        
-  .bindPopup(`<b>${ev.name}</b>`);
+            icon: L.divIcon({
+              className: '',
+              html: '📍',
+              iconSize: [30, 30],
+              iconAnchor: [10, 10]
+            })
+          }).addTo(map);
+
+          marker.vibe = ev.vibe.toLowerCase();
+          marker.bindPopup(`<b>${ev.name}</b>`);
+          markers.push(marker);
+
           marker.on('click', function() {
             console.log("Marker clicked");
             const details = document.getElementById('details');
@@ -93,23 +100,26 @@
             `;
             details.style.display = 'block';
 
-           
-    document.getElementById('vibeFilter').addEventListener('change', function() {
-      const selectedVibe = this.value.toLowerCase();
-
-      markers.forEach(marker => {
-        if (!selectedVibe || marker.vibe.includes(selectedVibe)) {
-          map.addLayer(marker);
-        } else {
-          map.removeLayer(marker);
-        }
-            };
+            document.getElementById('closeDetails').addEventListener('click', () => {
+              details.style.display = 'none';
+            });
           });
         });
       })
       .catch(err => {
         console.error('Error loading events.json:', err);
       });
+
+    document.getElementById('vibeFilter').addEventListener('change', function() {
+      const selectedVibe = this.value.toLowerCase();
+      markers.forEach(marker => {
+        if (!selectedVibe || marker.vibe.includes(selectedVibe)) {
+          map.addLayer(marker);
+        } else {
+          map.removeLayer(marker);
+        }
+      });
+    });
   </script>
 </body>
 </html>
