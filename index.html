@@ -51,7 +51,15 @@
       .then(response => response.json())
       .then(events => {
         events.forEach(ev => {
-          const marker = L.marker([ev.lat, ev.lon]).addTo(map);
+          const marker = L.marker([ev.lat, ev.lon], {
+  icon: L.divIcon({
+    className: '',
+    html: '📍',
+    iconSize: [20, 20],
+    iconAnchor: [10, 10]
+  })
+}).addTo(map)
+  .bindPopup(`<b>${ev.name}</b>`);
           marker.on('click', function() {
             console.log("Marker clicked");
             const details = document.getElementById('details');
