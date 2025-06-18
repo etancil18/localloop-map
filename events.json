@@ -1230,5 +1230,75 @@
     "lat": 40.6848704,
     "lon": -73.9385509,
     "link": "https://www.instagram.com/frogwinebar/"
+  },
+{
+    "name": "Apotheke Chinatown",
+    "vibe": "Cocktail-focused, speakeasy, intimate",
+    "lat": 40.7144,
+    "lon": -73.999818,
+    "link": "https://www.instagram.com/apothekenyc/?hl=en"
+  },
+  {
+    "name": "Patent Pending",
+    "vibe": "Innovative, chic, craft cocktails",
+    "lat": 40.7453222,
+    "lon": -73.9902716,
+    "link": "https://www.instagram.com/patentpendingnyc/?hl=en"
+  },
+  {
+    "name": "Wilfie & Nell",
+    "vibe": "Cozy, eclectic, neighborhood bar",
+    "lat": 40.734068,
+    "lon": -74.0030242,
+    "link": "https://www.instagram.com/wilfieandnell/?hl=en"
+  },
+  {
+    "name": "Rosecrans Cafe & Wine Bar",
+    "vibe": "Coffee, relaxed, plants, wine-focused",
+    "lat": 40.7341712,
+    "lon": -73.9998463,
+    "link": "https://www.instagram.com/rosecrans/?hl=en"
+  },
+  {
+    "name": "Sunshine Laundromat",
+    "vibe": "Hidden gem, casual, arcade bar",
+    "lat": 40.7292851,
+    "lon": -73.953737,
+    "link": "https://www.instagram.com/sunshinelaundromat/?hl=en"
+  },
+  {
+    "name": "Gran Torino",
+    "vibe": "Trendy, Italian-inspired, relaxed vibe",
+    "lat": 40.7183923,
+    "lon": -73.9588733,
+    "link": "https://www.instagram.com/grantorinonyc/?hl=en"
+  },
+  {
+    "name": "Cafe Balearica",
+    "vibe": "Mediterranean, drinks, laid-back",
+    "lat": 40.7210681,
+    "lon": -73.9567687,
+    "link": "https://www.instagram.com/cafebalearica/?hl=en"
+  },
+  {
+    "name": "Juliette Restaurant",
+    "vibe": "Chic, rustic, romantic dining",
+    "lat": 40.716997,
+    "lon": -73.9591501,
+    "link": "https://www.instagram.com/juliettebkny/?hl=en"
+  },
+  {
+    "name": "MIDNIGHTS",
+    "vibe": "Trendy, intimate, nightlife spot",
+    "lat": 40.7174706,
+    "lon": -73.9584368,
+    "link": "https://www.instagram.com/midnightsbrooklyn/?hl=en"
+  },
+  {
+    "name": "Skinny Dennis",
+    "vibe": "Fun, country, dive bar vibes",
+    "lat": 40.7158872,
+    "lon": -73.9621335,
+    "link": "https://www.instagram.com/skinnydennis/?hl=en"
   }
 ]
