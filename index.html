@@ -146,14 +146,19 @@ function applyFilters() {
 function handleRouteSelection(latlng) {
   selectedPoints.push(latlng);
   if (selectedPoints.length === 2) {
-    if (currentRoute) map.removeControl(currentRoute);
+    if (currentRoute) {
+      map.removeControl(currentRoute);
+    }
+
     currentRoute = L.Routing.control({
       waypoints: selectedPoints,
       router: new L.Routing.OpenRouteService('5b3ce3597851110001cf624866a592b4b8ea4fca87a9f93bda4af695', {
         profile: 'foot-walking'
       }),
-      routeWhileDragging: false
+      routeWhileDragging: false,
+      show: false
     }).addTo(map);
+
     selectedPoints = [];
   }
 }
