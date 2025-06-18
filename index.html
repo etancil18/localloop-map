@@ -7,37 +7,22 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
   <style>
     body { margin: 0; padding: 0; }
     #map { height: 100vh; width: 100vw; }
     #details {
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 300px;
-      background: white;
-      padding: 10px;
+      position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+      width: 300px; background: white; padding: 10px;
       box-shadow: 0 0 5px rgba(0,0,0,0.3);
-      font-family: sans-serif;
-      font-size: 14px;
-      display: none;
-      z-index: 1000;
+      font-family: sans-serif; font-size: 14px;
+      display: none; z-index: 1000;
     }
     #details button {
-      display: block;
-      margin-top: 5px;
-      background: #ccc;
-      border: none;
-      padding: 5px;
-      cursor: pointer;
+      display: block; margin-top: 5px; background: #ccc;
+      border: none; padding: 5px; cursor: pointer;
     }
     #vibeFilter, #map-search, #clearRoute {
-      position: absolute;
-      z-index: 1000;
-      font-size: 14px;
-      padding: 5px;
+      position: absolute; z-index: 1000; font-size: 14px; padding: 5px;
     }
     #map-search { top: 10px; left: 50px; width: 250px; }
     #vibeFilter { top: 10px; left: 330px; }
@@ -65,11 +50,11 @@
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
-<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
-<script src="https://unpkg.com/lrm-openrouteservice/dist/lrm-openrouteservice.js"></script>
 
 <script>
+const apiKey = '5b3ce3597851110001cf624866a592b4b8ea4fca87a9f93bda4af695';
 const map = L.map('map').setView([40.72, -73.98], 12);
+
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
@@ -85,7 +70,7 @@ map.addLayer(markerCluster);
 
 const allMarkers = [];
 let selectedPoints = [];
-let currentRoute = null;
+let currentRouteLayer = null;
 
 fetch('events.json')
   .then(res => res.json())
@@ -102,30 +87,69 @@ fetch('events.json')
 
       marker.vibe = ev.vibe.toLowerCase();
       marker.name = ev.name.toLowerCase();
-      marker.bindPopup(`<b>${ev.name}</b>`);
 
       marker.on('click', () => {
-        const details = document.getElementById('details');
-        details.innerHTML = `
-          <strong>${ev.name}</strong><br>
-          Vibe: ${ev.vibe}<br>
-          <a href="${ev.link}" target="_blank">View More</a><br>
-          <button id="closeDetails">Close</button>
-        `;
-        details.style.display = 'block';
-
-        document.getElementById('closeDetails').addEventListener('click', () => {
-          details.style.display = 'none';
-        });
-
+        showDetails(ev);
         handleRouteSelection(marker.getLatLng());
       });
 
       allMarkers.push(marker);
       markerCluster.addLayer(marker);
     });
+  });
+
+function showDetails(ev) {
+  const details = document.getElementById('details');
+  details.innerHTML = `
+    <strong>${ev.name}</strong><br>
+    Vibe: ${ev.vibe}<br>
+    <a href="${ev.link}" target="_blank">View More</a><br>
+    <button id="closeDetails">Close</button>
+  `;
+  details.style.display = 'block';
+  document.getElementById('closeDetails').addEventListener('click', () => {
+    details.style.display = 'none';
+  });
+}
+
+function handleRouteSelection(latlng) {
+  selectedPoints.push([latlng.lng, latlng.lat]); // GeoJSON order: lon, lat
+  if (selectedPoints.length === 2) {
+    getPedestrianRoute(selectedPoints[0], selectedPoints[1]);
+    selectedPoints = [];
+  }
+}
+
+function getPedestrianRoute(start, end) {
+  if (currentRouteLayer) {
+    map.removeLayer(currentRouteLayer);
+  }
+
+  fetch(`https://api.openrouteservice.org/v2/directions/foot-walking?api_key=${apiKey}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      coordinates: [start, end]
+    })
   })
-  .catch(err => console.error('Error loading events.json:', err));
+  .then(res => res.json())
+  .then(data => {
+    const coords = data.features[0].geometry.coordinates.map(c => [c[1], c[0]]);
+    currentRouteLayer = L.polyline(coords, { color: 'blue', weight: 4 }).addTo(map);
+    map.fitBounds(currentRouteLayer.getBounds());
+  })
+  .catch(err => console.error('Routing error:', err));
+}
+
+document.getElementById('vibeFilter').addEventListener('change', applyFilters);
+document.getElementById('map-search').addEventListener('input', applyFilters);
+document.getElementById('clearRoute').addEventListener('click', () => {
+  if (currentRouteLayer) {
+    map.removeLayer(currentRouteLayer);
+    currentRouteLayer = null;
+  }
+  selectedPoints = [];
+});
 
 function applyFilters() {
   const vibe = document.getElementById('vibeFilter').value.toLowerCase();
@@ -142,36 +166,6 @@ function applyFilters() {
     }
   });
 }
-
-function handleRouteSelection(latlng) {
-  selectedPoints.push(latlng);
-  if (selectedPoints.length === 2) {
-    if (currentRoute) {
-      map.removeControl(currentRoute);
-    }
-
-    currentRoute = L.Routing.control({
-      waypoints: selectedPoints,
-      router: new L.Routing.OpenRouteService('5b3ce3597851110001cf624866a592b4b8ea4fca87a9f93bda4af695', {
-        profile: 'foot-walking'
-      }),
-      routeWhileDragging: false,
-      show: false
-    }).addTo(map);
-
-    selectedPoints = [];
-  }
-}
-
-document.getElementById('vibeFilter').addEventListener('change', applyFilters);
-document.getElementById('map-search').addEventListener('input', applyFilters);
-document.getElementById('clearRoute').addEventListener('click', () => {
-  if (currentRoute) {
-    map.removeControl(currentRoute);
-    currentRoute = null;
-  }
-  selectedPoints = [];
-});
 </script>
 </body>
 </html>
