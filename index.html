@@ -125,7 +125,7 @@ function applyFilters() {
 
 function handleRouteSelection(latlng) {
   selectedPoints.push(latlng);
-  if (selectedPoints.length === 2) {
+  if (selectedPoints.length === 3) {
     if (currentRoute) map.removeControl(currentRoute);
     currentRoute = L.Routing.control({
       waypoints: selectedPoints,
