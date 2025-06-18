@@ -22,11 +22,12 @@
       display: block; margin-top: 5px; background: #ccc;
       border: none; padding: 5px; cursor: pointer;
     }
-    #vibeFilter, #map-search, #clearRoute {
+    #vibeFilter, #map-search, #clearRoute, #removeLastPoint {
       position: absolute; z-index: 1000; font-size: 14px; padding: 5px;
     }
     #map-search { top: 10px; left: 50px; width: 250px; }
     #vibeFilter { top: 10px; left: 330px; }
+    #removeLastPoint { top: 10px; right: 450px; }
     #clearRoute { top: 10px; right: 350px; }
   </style>
 </head>
@@ -44,6 +45,7 @@
   <option value="hidden gem">Hidden Gem</option>
   <option value="wine">Wine</option>
 </select>
+<button id="removeLastPoint">Remove Last Point</button>
 <button id="clearRoute">Clear Route</button>
 
 <div id="map"></div>
@@ -114,17 +116,21 @@ function showDetails(ev) {
 }
 
 function handleRouteSelection(latlng) {
-  selectedPoints.push(latlng);
-  if (selectedPoints.length === 2) {
-    if (currentRoute) {
-      map.removeControl(currentRoute);
-    }
-    currentRoute = L.Routing.control({
-      waypoints: selectedPoints,
-      routeWhileDragging: false
-    }).addTo(map);
-    selectedPoints = [];
+  if (selectedPoints.length >= 5) {
+    alert('Maximum 5 points allowed. Clear or remove a point to add new.');
+    return;
   }
+
+  selectedPoints.push(latlng);
+
+  if (currentRoute) {
+    map.removeControl(currentRoute);
+  }
+
+  currentRoute = L.Routing.control({
+    waypoints: selectedPoints,
+    routeWhileDragging: false
+  }).addTo(map);
 }
 
 function applyFilters() {
@@ -145,12 +151,34 @@ function applyFilters() {
 
 document.getElementById('vibeFilter').addEventListener('change', applyFilters);
 document.getElementById('map-search').addEventListener('input', applyFilters);
+
 document.getElementById('clearRoute').addEventListener('click', () => {
   if (currentRoute) {
     map.removeControl(currentRoute);
     currentRoute = null;
   }
   selectedPoints = [];
+});
+
+document.getElementById('removeLastPoint').addEventListener('click', () => {
+  if (selectedPoints.length === 0) {
+    alert('No points to remove.');
+    return;
+  }
+
+  selectedPoints.pop();
+
+  if (currentRoute) {
+    map.removeControl(currentRoute);
+    currentRoute = null;
+  }
+
+  if (selectedPoints.length >= 2) {
+    currentRoute = L.Routing.control({
+      waypoints: selectedPoints,
+      routeWhileDragging: false
+    }).addTo(map);
+  }
 });
 </script>
 </body>
