@@ -33,11 +33,30 @@
       padding: 5px;
       cursor: pointer;
     }
+     #vibeFilter {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 1000;
+      padding: 5px;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
+      <select id="vibeFilter">
+    <option value="">Show All</option>
+    <option value="jazz">Jazz</option>
+    <option value="artsy">Artsy</option>
+    <option value="cozy">Cozy</option>
+    <option value="hip">Hip</option>
+    <option value="trendy">Trendy</option>
+    <option value="rustic">Rustic</option>
+  </select>
   <div id="map"></div>
   <div id="details"></div>
+  <strong>Click a pin to see details</strong>
+  </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
@@ -58,7 +77,10 @@
     iconSize: [30, 30],
     iconAnchor: [10, 10]
   })
-}).addTo(map)
+}).addTo(map);
+          
+  marker.vibe = ev.vibe.toLowerCase();
+      markers.push(marker);        
   .bindPopup(`<b>${ev.name}</b>`);
           marker.on('click', function() {
             console.log("Marker clicked");
@@ -71,8 +93,16 @@
             `;
             details.style.display = 'block';
 
-            document.getElementById('closeDetails').onclick = function() {
-              details.style.display = 'none';
+           
+    document.getElementById('vibeFilter').addEventListener('change', function() {
+      const selectedVibe = this.value.toLowerCase();
+
+      markers.forEach(marker => {
+        if (!selectedVibe || marker.vibe.includes(selectedVibe)) {
+          map.addLayer(marker);
+        } else {
+          map.removeLayer(marker);
+        }
             };
           });
         });
