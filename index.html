@@ -5,6 +5,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
   <style>
     body {
       margin: 0;
@@ -59,93 +61,95 @@
 </head>
 <body>
 
-  <input id="map-search" type="text" placeholder="Search by name or vibe..." />
-  <select id="vibeFilter">
-    <option value="">Show All</option>
-    <option value="jazz">Jazz</option>
-    <option value="artsy">Artsy</option>
-    <option value="cozy">Cozy</option>
-    <option value="hip">Hip</option>
-    <option value="trendy">Trendy</option>
-    <option value="rustic">Rustic</option>
-    <option value="hidden gem">Hidden Gem</option>
-    <option value="wine">Wine</option>
-  </select>
+<input id="map-search" type="text" placeholder="Search by name or vibe..." />
+<select id="vibeFilter">
+  <option value="">Show All</option>
+  <option value="jazz">Jazz</option>
+  <option value="artsy">Artsy</option>
+  <option value="cozy">Cozy</option>
+  <option value="hip">Hip</option>
+  <option value="trendy">Trendy</option>
+  <option value="rustic">Rustic</option>
+  <option value="hidden gem">Hidden Gem</option>
+  <option value="wine">Wine</option>
+</select>
 
-  <div id="map"></div>
-  <div id="details">
-    <strong>Click a pin to see details</strong>
-  </div>
+<div id="map"></div>
+<div id="details">
+  <strong>Click a pin to see details</strong>
+</div>
 
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script>
-    const map = L.map('map').setView([40.72, -73.98], 12);
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+<script>
+  const map = L.map('map').setView([40.72, -73.98], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
+  const markerCluster = L.markerClusterGroup();
+  map.addLayer(markerCluster);
 
-    const markers = [];
+  const allMarkers = [];
 
-    fetch('events.json')
-      .then(response => response.json())
-      .then(events => {
-        events.forEach(ev => {
-          const marker = L.marker([ev.lat, ev.lon], {
-            icon: L.divIcon({
-              className: '',
-              html: '📍',
-              iconSize: [100, 100],
-              iconAnchor: [10, 10]
-            })
-          }).addTo(map);
+  fetch('events.json')
+    .then(response => response.json())
+    .then(events => {
+      events.forEach(ev => {
+        const marker = L.marker([ev.lat, ev.lon], {
+          icon: L.divIcon({
+            className: '',
+            html: '📍',
+            iconSize: [100, 100],
+            iconAnchor: [10, 10]
+          })
+        });
 
-          marker.vibe = ev.vibe.toLowerCase();
-          marker.name = ev.name.toLowerCase();
-          marker.bindPopup(`<b>${ev.name}</b>`);
-          markers.push(marker);
+        marker.vibe = ev.vibe.toLowerCase();
+        marker.name = ev.name.toLowerCase();
+        marker.bindPopup(`<b>${ev.name}</b>`);
+        
+        marker.on('click', function() {
+          const details = document.getElementById('details');
+          details.innerHTML = `
+            <strong>${ev.name}</strong><br>
+            Vibe: ${ev.vibe}<br>
+            <a href="${ev.link}" target="_blank">View More</a><br>
+            <button id="closeDetails">Close</button>
+          `;
+          details.style.display = 'block';
 
-          marker.on('click', function() {
-            const details = document.getElementById('details');
-            details.innerHTML = `
-              <strong>${ev.name}</strong><br>
-              Vibe: ${ev.vibe}<br>
-              <a href="${ev.link}" target="_blank">View More</a><br>
-              <button id="closeDetails">Close</button>
-            `;
-            details.style.display = 'block';
-
-            document.getElementById('closeDetails').addEventListener('click', () => {
-              details.style.display = 'none';
-            });
+          document.getElementById('closeDetails').addEventListener('click', () => {
+            details.style.display = 'none';
           });
         });
-      })
-      .catch(err => {
-        console.error('Error loading events.json:', err);
-      });
 
-    document.getElementById('vibeFilter').addEventListener('change', function() {
-      const selectedVibe = this.value.toLowerCase();
-      markers.forEach(marker => {
-        if (!selectedVibe || marker.vibe.includes(selectedVibe)) {
-          map.addLayer(marker);
-        } else {
-          map.removeLayer(marker);
-        }
+        allMarkers.push(marker);
+        markerCluster.addLayer(marker);
       });
+    })
+    .catch(err => {
+      console.error('Error loading events.json:', err);
     });
 
-    document.getElementById('map-search').addEventListener('input', function(e) {
-      const query = e.target.value.toLowerCase();
-      markers.forEach(marker => {
-        if (!query || marker.name.includes(query) || marker.vibe.includes(query)) {
-          map.addLayer(marker);
-        } else {
-          map.removeLayer(marker);
-        }
-      });
+  function applyFilters() {
+    const vibe = document.getElementById('vibeFilter').value.toLowerCase();
+    const query = document.getElementById('map-search').value.toLowerCase();
+
+    markerCluster.clearLayers();
+
+    allMarkers.forEach(marker => {
+      const vibeMatch = !vibe || marker.vibe.includes(vibe);
+      const searchMatch = !query || marker.name.includes(query) || marker.vibe.includes(query);
+
+      if (vibeMatch && searchMatch) {
+        markerCluster.addLayer(marker);
+      }
     });
-  </script>
+  }
+
+  document.getElementById('vibeFilter').addEventListener('change', applyFilters);
+  document.getElementById('map-search').addEventListener('input', applyFilters);
+</script>
 </body>
 </html>
