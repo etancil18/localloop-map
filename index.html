@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
   <style>
     body { margin: 0; padding: 0; }
     #map { height: 100vh; width: 100vw; }
@@ -50,9 +51,9 @@
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+<script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 
 <script>
-const apiKey = '5b3ce3597851110001cf624866a592b4b8ea4fca87a9f93bda4af695';
 const map = L.map('map').setView([40.72, -73.98], 12);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -70,7 +71,7 @@ map.addLayer(markerCluster);
 
 const allMarkers = [];
 let selectedPoints = [];
-let currentRouteLayer = null;
+let currentRoute = null;
 
 fetch('events.json')
   .then(res => res.json())
@@ -113,43 +114,18 @@ function showDetails(ev) {
 }
 
 function handleRouteSelection(latlng) {
-  selectedPoints.push([latlng.lng, latlng.lat]); // GeoJSON order: lon, lat
+  selectedPoints.push(latlng);
   if (selectedPoints.length === 2) {
-    getPedestrianRoute(selectedPoints[0], selectedPoints[1]);
+    if (currentRoute) {
+      map.removeControl(currentRoute);
+    }
+    currentRoute = L.Routing.control({
+      waypoints: selectedPoints,
+      routeWhileDragging: false
+    }).addTo(map);
     selectedPoints = [];
   }
 }
-
-function getPedestrianRoute(start, end) {
-  if (currentRouteLayer) {
-    map.removeLayer(currentRouteLayer);
-  }
-
-  fetch(`https://api.openrouteservice.org/v2/directions/foot-walking?api_key=${apiKey}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      coordinates: [start, end]
-    })
-  })
-  .then(res => res.json())
-  .then(data => {
-    const coords = data.features[0].geometry.coordinates.map(c => [c[1], c[0]]);
-    currentRouteLayer = L.polyline(coords, { color: 'blue', weight: 4 }).addTo(map);
-    map.fitBounds(currentRouteLayer.getBounds());
-  })
-  .catch(err => console.error('Routing error:', err));
-}
-
-document.getElementById('vibeFilter').addEventListener('change', applyFilters);
-document.getElementById('map-search').addEventListener('input', applyFilters);
-document.getElementById('clearRoute').addEventListener('click', () => {
-  if (currentRouteLayer) {
-    map.removeLayer(currentRouteLayer);
-    currentRouteLayer = null;
-  }
-  selectedPoints = [];
-});
 
 function applyFilters() {
   const vibe = document.getElementById('vibeFilter').value.toLowerCase();
@@ -166,6 +142,16 @@ function applyFilters() {
     }
   });
 }
+
+document.getElementById('vibeFilter').addEventListener('change', applyFilters);
+document.getElementById('map-search').addEventListener('input', applyFilters);
+document.getElementById('clearRoute').addEventListener('click', () => {
+  if (currentRoute) {
+    map.removeControl(currentRoute);
+    currentRoute = null;
+  }
+  selectedPoints = [];
+});
 </script>
 </body>
 </html>
