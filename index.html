@@ -52,7 +52,6 @@
       .then(events => {
         events.forEach(ev => {
           const marker = L.marker([ev.lat, ev.lon]).addTo(map);
-          
           marker.on('click', function() {
             console.log("Marker clicked");
             const details = document.getElementById('details');
