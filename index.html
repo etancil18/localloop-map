@@ -66,6 +66,7 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
 <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+<script src="https://unpkg.com/lrm-openrouteservice/dist/lrm-openrouteservice.js"></script>
 
 <script>
 const map = L.map('map').setView([40.72, -73.98], 12);
@@ -148,7 +149,10 @@ function handleRouteSelection(latlng) {
     if (currentRoute) map.removeControl(currentRoute);
     currentRoute = L.Routing.control({
       waypoints: selectedPoints,
-      routeWhileDragging: true
+      router: new L.Routing.OpenRouteService('5b3ce3597851110001cf624866a592b4b8ea4fca87a9f93bda4af695', {
+        profile: 'foot-walking'
+      }),
+      routeWhileDragging: false
     }).addTo(map);
     selectedPoints = [];
   }
