@@ -92,8 +92,7 @@ fetch('events.json')
       marker.name = ev.name.toLowerCase();
 
       marker.on('click', () => {
-        showDetails(ev);
-        handleRouteSelection(marker.getLatLng());
+        showDetails(ev, marker.getLatLng());
       });
 
       allMarkers.push(marker);
@@ -101,36 +100,47 @@ fetch('events.json')
     });
   });
 
-function showDetails(ev) {
+function showDetails(ev, latlng) {
   const details = document.getElementById('details');
   details.innerHTML = `
     <strong>${ev.name}</strong><br>
     Vibe: ${ev.vibe}<br>
     <a href="${ev.link}" target="_blank">View More</a><br>
+    <button id="addToRoute">Add to Route</button>
     <button id="closeDetails">Close</button>
   `;
   details.style.display = 'block';
+
+  document.getElementById('addToRoute').addEventListener('click', () => {
+    addPointToRoute(latlng);
+  });
+
   document.getElementById('closeDetails').addEventListener('click', () => {
     details.style.display = 'none';
   });
 }
 
-function handleRouteSelection(latlng) {
+function addPointToRoute(latlng) {
   if (selectedPoints.length >= 5) {
     alert('Maximum 5 points allowed. Clear or remove a point to add new.');
     return;
   }
 
   selectedPoints.push(latlng);
+  updateRoute();
+}
 
+function updateRoute() {
   if (currentRoute) {
     map.removeControl(currentRoute);
   }
 
-  currentRoute = L.Routing.control({
-    waypoints: selectedPoints,
-    routeWhileDragging: false
-  }).addTo(map);
+  if (selectedPoints.length >= 2) {
+    currentRoute = L.Routing.control({
+      waypoints: selectedPoints,
+      routeWhileDragging: false
+    }).addTo(map);
+  }
 }
 
 function applyFilters() {
@@ -167,18 +177,7 @@ document.getElementById('removeLastPoint').addEventListener('click', () => {
   }
 
   selectedPoints.pop();
-
-  if (currentRoute) {
-    map.removeControl(currentRoute);
-    currentRoute = null;
-  }
-
-  if (selectedPoints.length >= 2) {
-    currentRoute = L.Routing.control({
-      waypoints: selectedPoints,
-      routeWhileDragging: false
-    }).addTo(map);
-  }
+  updateRoute();
 });
 </script>
 </body>
