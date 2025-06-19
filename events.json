@@ -1567,5 +1567,173 @@
   { "name": "JANE Motorcycles", "vibe": "Cool, Artsy, Vintage, Unique", "lat": 40.7125186, "lon": -73.9660797, "link": "https://www.instagram.com/janemotorcycles/" },
   { "name": "Tokyo Record Bar", "vibe": "Chic, Trendy, Japanese, Music-infused", "lat": 40.7306295, "lon": -74.00015175, "link": "https://www.instagram.com/tokyorecordbar/" },
   { "name": "LaRina Pastificio & Vino", "vibe": "Cozy, Italian, Rustic, Wine Bar", "lat": 40.6932918, "lon": -73.9704197, "link": "https://www.instagram.com/larinabrooklyn/" },
-  { "name": "The Django", "vibe": "Chic, Elegant, Jazz Bar, Upscale", "lat": 40.7193091, "lon": -74.0048375, "link": "https://www.instagram.com/thedjangonyc/" }
+  { "name": "The Django", "vibe": "Chic, Elegant, Jazz Bar, Upscale", "lat": 40.7193091, "lon": -74.0048375, "link": "https://www.instagram.com/thedjangonyc/" },
+{
+    "name": "Pokito",
+    "vibe": "Casual, Caribbean-inspired, vibrant",
+    "lat": 40.7116327,
+    "lon": -73.961939,
+    "link": "https://www.instagram.com/pokitobrooklyn/"
+  },
+  {
+    "name": "MoMA PS1",
+    "vibe": "Artistic, concert, cultural hub, events",
+    "lat": 40.745568,
+    "lon": -73.946913,
+    "link": "https://www.instagram.com/momaps1/"
+  },
+  {
+    "name": "Record Room",
+    "vibe": "Bar, lounge, music haven",
+    "lat": 40.74574039,
+    "lon": -73.9571733,
+    "link": "https://www.instagram.com/recordroom/"
+  },
+  {
+    "name": "Honeycomb Hi-Fi Lounge",
+    "vibe": "Retro, hi-fi, music-focused",
+    "lat": 40.6807473,
+    "lon": -73.9776796,
+    "link": "https://www.instagram.com/thehoneycomb_bk/"
+  },
+  {
+    "name": "Rhodora Wine Bar",
+    "vibe": "Cozy, intimate, neighborhood wine bar",
+    "lat": 40.6917428,
+    "lon": -73.9714335,
+    "link": "https://www.instagram.com/rhodora_wine_bar/"
+  },
+  {
+    "name": "Bar Birba",
+    "vibe": "Wine, casual, neighborhood spot",
+    "lat": 40.6874732,
+    "lon": -73.9570883,
+    "link": "https://www.instagram.com/barbirbabk/"
+  },
+  {
+    "name": "Entre Nous",
+    "vibe": "Sophisticated, French-inspired, relaxed, wine",
+    "lat": 40.6879326,
+    "lon": -73.962875,
+    "link": "https://www.instagram.com/entrenous.bk/"
+  },
+  {
+    "name": "Anaïs",
+    "vibe": "Elegant, intimate, wine and dine",
+    "lat": 40.6848831,
+    "lon": -73.9860837,
+    "link": "https://www.instagram.com/anaiswinebk/"
+  },
+  {
+    "name": "Petit Paulette",
+    "vibe": "Cozy, casual, French bistro vibes, wine",
+    "lat": 40.689612,
+    "lon": -73.9757378,
+    "link": "https://www.instagram.com/petitpaulettebk/"
+  },
+  {
+    "name": "The Ten Bells Brooklyn",
+    "vibe": "Cozy, wine-focused, laid-back",
+    "lat": 40.70467705,
+    "lon": -73.92385397,
+    "link": "https://www.instagram.com/thetenbells/"
+  },
+  {
+    "name": "Bouquet",
+    "vibe": "Elegant, wine-centric, cozy atmosphere",
+    "lat": 40.73538615,
+    "lon": -73.9553597,
+    "link": "https://www.instagram.com/bouquetwinebar/"
+  },
+  {
+    "name": "Diamond Lil",
+    "vibe": "Dive bar, quirky, neighborhood gem",
+    "lat": 40.725437,
+    "lon": -73.946085,
+    "link": "https://www.instagram.com/diamondlilbar/"
+  },
+  {
+    "name": "Heaven & Earth",
+    "vibe": "Chill, cozy, neighborhood wine bar",
+    "lat": 40.7260331,
+    "lon": -73.9391293,
+    "link": "https://www.instagram.com/heavenandearth.bk/"
+  },
+  {
+    "name": "BABA on Withers",
+    "vibe": "Hidden, cozy, creative cocktails, wine",
+    "lat": 40.717003,
+    "lon": -73.95074,
+    "link": "https://www.instagram.com/babaonwithers/"
+  },
+  {
+    "name": "Plus de Vin",
+    "vibe": "Cozy, wine-focused, rustic charm",
+    "lat": 40.7185124,
+    "lon": -73.9451974,
+    "link": "https://www.instagram.com/pdvnyc/"
+  },
+  {
+    "name": "Woodhul Wine Bar",
+    "vibe": "Cozy, artsy, intimate setting, wine",
+    "lat": 40.7149932,
+    "lon": -73.9587858,
+    "link": "https://www.instagram.com/woodhulwinebar/"
+  },
+  {
+    "name": "Pinkerton Wine Bar",
+    "vibe": "Chill, neighborhood bar, craft wines",
+    "lat": 40.7148899,
+    "lon": -73.9542821,
+    "link": "https://www.instagram.com/pinkertonbk/"
+  },
+  {
+    "name": "Sauced",
+    "vibe": "Cozy, casual, trendy wine bar",
+    "lat": 40.7254538,
+    "lon": -73.99029434,
+    "link": "https://www.instagram.com/sauced.nyc/"
+  },
+  {
+    "name": "The Immigrant",
+    "vibe": "Cool, laid-back, unique cocktail bar, wine",
+    "lat": 40.7285237,
+    "lon": -73.9854028,
+    "link": "https://www.instagram.com/theimmigrant_nyc/"
+  },
+  {
+    "name": "Ruffian",
+    "vibe": "Sophisticated, intimate, craft cocktails, wine",
+    "lat": 40.7264,
+    "lon": -73.984114,
+    "link": "https://www.instagram.com/ruffian_nyc/"
+  },
+  {
+    "name": "Bibi Wine Bar",
+    "vibe": "Cozy, contemporary, wine-focused",
+    "lat": 40.7238517,
+    "lon": -73.983598,
+    "link": "https://www.instagram.com/bibiwinebar/"
+  },
+  {
+    "name": "Brick Wine Bar",
+    "vibe": "Casual, charming, intimate wine bar",
+    "lat": 40.7206712,
+    "lon": -73.9843722,
+    "link": "https://www.instagram.com/brick.winebar/"
+  },
+  {
+    "name": "Domino Wine Bar",
+    "vibe": "Cozy, relaxed, neighborhood spot, wine",
+    "lat": 40.7114643,
+    "lon": -73.9577638,
+    "link": "https://www.instagram.com/dominowinebarbk/"
+  },
+  {
+    "name": "Lise & Vito",
+    "vibe": "Chic, intimate, fine wine and dining",
+    "lat": 40.72438215,
+    "lon": -73.94842052,
+    "link": "https://www.instagram.com/liseandvito/"
+  }
 ]
