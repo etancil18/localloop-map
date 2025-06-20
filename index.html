@@ -22,14 +22,13 @@
       display: block; margin-top: 5px; background: #ccc;
       border: none; padding: 5px; cursor: pointer;
     }
-    #vibeFilter, #map-search, #clearRoute, #removeLastPoint, #exportRoute {
+    #vibeFilter, #map-search, #clearRoute, #removeLastPoint {
       position: absolute; z-index: 1000; font-size: 14px; padding: 5px;
     }
     #map-search { top: 10px; left: 50px; width: 250px; }
     #vibeFilter { top: 10px; left: 330px; }
-    #removeLastPoint { top: 10px; right: 550px; }
-    #clearRoute { top: 10px; right: 450px; }
-    #exportRoute { top: 10px; right: 350px; }
+    #removeLastPoint { top: 10px; right: 450px; }
+    #clearRoute { top: 10px; right: 350px; }
   </style>
 </head>
 <body>
@@ -49,7 +48,6 @@
 </select>
 <button id="removeLastPoint">Remove Last Point</button>
 <button id="clearRoute">Clear Route</button>
-<button id="exportRoute">Export Route</button>
 
 <div id="map"></div>
 <div id="details"><strong>Click a pin to see details</strong></div>
@@ -60,18 +58,11 @@
 
 <script>
 const map = L.map('map').setView([40.72, -73.98], 12);
-
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-const markerCluster = L.markerClusterGroup({
-  spiderfyOnMaxZoom: true,
-  showCoverageOnHover: false,
-  zoomToBoundsOnClick: true,
-  maxClusterRadius: 40,
-  disableClusteringAtZoom: 17
-});
+const markerCluster = L.markerClusterGroup({ spiderfyOnMaxZoom: true, showCoverageOnHover: false, zoomToBoundsOnClick: true, maxClusterRadius: 40, disableClusteringAtZoom: 17 });
 map.addLayer(markerCluster);
 
 const allMarkers = [];
@@ -102,7 +93,6 @@ fetch('events.json')
           iconAnchor: [5, 5]
         })
       });
-
       marker.vibe = ev.vibe.toLowerCase();
       marker.name = ev.name.toLowerCase();
 
@@ -117,22 +107,34 @@ fetch('events.json')
 
 function showDetails(ev, latlng) {
   const details = document.getElementById('details');
+  const suggestions = findNearbySimilar(latlng, ev.vibe.toLowerCase(), 350);
+  let suggestionHtml = suggestions.length > 0 ?
+    `<strong>Also could be the move:</strong><ul>${suggestions.map(s => `<li>${s.name}</li>`).join('')}</ul>` :
+    '<em>No similar spots nearby</em>';
+
   details.innerHTML = `
     <strong>${ev.name}</strong><br>
     Vibe: ${ev.vibe}<br>
     <a href="${ev.link}" target="_blank">View More</a><br>
     <button id="addToRoute">Add to Route</button>
+    <button id="exportRoute">Export Route to Google Maps</button>
     <button id="closeDetails">Close</button>
+    ${suggestionHtml}
   `;
   details.style.display = 'block';
 
-  document.getElementById('addToRoute').addEventListener('click', () => {
-    addPointToRoute(latlng);
-  });
+  document.getElementById('addToRoute').addEventListener('click', () => addPointToRoute(latlng));
+  document.getElementById('exportRoute').addEventListener('click', exportRouteToGoogleMaps);
+  document.getElementById('closeDetails').addEventListener('click', () => details.style.display = 'none');
+}
 
-  document.getElementById('closeDetails').addEventListener('click', () => {
-    details.style.display = 'none';
-  });
+function findNearbySimilar(latlng, vibeText, radius) {
+  const vibeTags = vibeText.split(',').map(v => v.trim());
+  return allMarkers.filter(marker => {
+    const distance = latlng.distanceTo(marker.getLatLng());
+    const vibeMatch = vibeTags.some(tag => marker.vibe.includes(tag));
+    return distance <= radius && vibeMatch && !latlng.equals(marker.getLatLng());
+  }).slice(0, 3);
 }
 
 function addPointToRoute(latlng) {
@@ -145,39 +147,37 @@ function addPointToRoute(latlng) {
 }
 
 function updateRoute() {
-  if (currentRoute) {
-    map.removeControl(currentRoute);
-  }
+  if (currentRoute) map.removeControl(currentRoute);
   if (selectedPoints.length >= 2) {
-    currentRoute = L.Routing.control({
-      waypoints: selectedPoints,
-      routeWhileDragging: false
-    }).addTo(map);
+    currentRoute = L.Routing.control({ waypoints: selectedPoints, routeWhileDragging: false }).addTo(map);
   }
 }
 
 function exportRouteToGoogleMaps() {
   if (selectedPoints.length < 2) {
-    alert("You need at least a start and end point to export the route.");
+    alert("Select at least two points to export a route.");
     return;
   }
-  const origin = `${selectedPoints[0].lat},${selectedPoints[0].lng}`;
-  const destination = `${selectedPoints[selectedPoints.length - 1].lat},${selectedPoints[selectedPoints.length - 1].lng}`;
-  const waypoints = selectedPoints.slice(1, -1).map(p => `${p.lat},${p.lng}`).join('|');
-  const url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&waypoints=${encodeURIComponent(waypoints)}`;
+  const coords = selectedPoints.map(p => `${p.lat},${p.lng}`).join('/');
+  const url = `https://www.google.com/maps/dir/${coords}`;
   window.open(url, '_blank');
 }
 
-document.getElementById('exportRoute').addEventListener('click', exportRouteToGoogleMaps);
+function applyFilters() {
+  const vibe = document.getElementById('vibeFilter').value.toLowerCase();
+  const query = document.getElementById('map-search').value.toLowerCase();
+  markerCluster.clearLayers();
+  allMarkers.forEach(marker => {
+    let vibeMatch = !vibe;
+    if (vibe && vibeMap[vibe]) vibeMatch = vibeMap[vibe].some(keyword => marker.vibe.includes(keyword));
+    const searchMatch = !query || marker.name.includes(query) || marker.vibe.includes(query);
+    if (vibeMatch && searchMatch) markerCluster.addLayer(marker);
+  });
+}
+
 document.getElementById('vibeFilter').addEventListener('change', applyFilters);
 document.getElementById('map-search').addEventListener('input', applyFilters);
-document.getElementById('clearRoute').addEventListener('click', () => {
-  if (currentRoute) {
-    map.removeControl(currentRoute);
-    currentRoute = null;
-  }
-  selectedPoints = [];
-});
+document.getElementById('clearRoute').addEventListener('click', () => { if (currentRoute) map.removeControl(currentRoute); currentRoute = null; selectedPoints = []; });
 document.getElementById('removeLastPoint').addEventListener('click', () => {
   if (selectedPoints.length === 0) {
     alert('No points to remove.');
@@ -186,22 +186,6 @@ document.getElementById('removeLastPoint').addEventListener('click', () => {
   selectedPoints.pop();
   updateRoute();
 });
-
-function applyFilters() {
-  const vibe = document.getElementById('vibeFilter').value.toLowerCase();
-  const query = document.getElementById('map-search').value.toLowerCase();
-  markerCluster.clearLayers();
-  allMarkers.forEach(marker => {
-    let vibeMatch = !vibe;
-    if (vibe && vibeMap[vibe]) {
-      vibeMatch = vibeMap[vibe].some(keyword => marker.vibe.includes(keyword));
-    }
-    const searchMatch = !query || marker.name.includes(query) || marker.vibe.includes(query);
-    if (vibeMatch && searchMatch) {
-      markerCluster.addLayer(marker);
-    }
-  });
-}
 </script>
 </body>
 </html>
