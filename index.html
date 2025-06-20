@@ -75,6 +75,17 @@ const allMarkers = [];
 let selectedPoints = [];
 let currentRoute = null;
 
+const vibeMap = {
+  jazz: ["jazz"],
+  artsy: ["art", "artsy", "gallery", "museum"],
+  coffee: ["coffee", "café", "matcha"],
+  hip: ["hip", "trendy", "dj", "brunch"],
+  "date night": ["date", "intimate", "date night", "charming"],
+  nightlife: ["nightlife", "dance", "social", "dj", "speakeasy"],
+  "hidden gem": ["hidden", "hidden gem", "speakeasy", "underground"],
+  wine: ["wine", "natural wine", "craft wine"]
+};
+
 fetch('events.json')
   .then(res => res.json())
   .then(events => {
@@ -150,7 +161,11 @@ function applyFilters() {
   markerCluster.clearLayers();
 
   allMarkers.forEach(marker => {
-    const vibeMatch = !vibe || marker.vibe.includes(vibe);
+    let vibeMatch = !vibe;
+    if (vibe && vibeMap[vibe]) {
+      vibeMatch = vibeMap[vibe].some(keyword => marker.vibe.includes(keyword));
+    }
+    
     const searchMatch = !query || marker.name.includes(query) || marker.vibe.includes(query);
 
     if (vibeMatch && searchMatch) {
@@ -175,7 +190,6 @@ document.getElementById('removeLastPoint').addEventListener('click', () => {
     alert('No points to remove.');
     return;
   }
-
   selectedPoints.pop();
   updateRoute();
 });
