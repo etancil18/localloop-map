@@ -103,7 +103,6 @@ fetch('events.json')
 
       marker.vibe = ev.vibe.toLowerCase();
       marker.name = ev.name.toLowerCase();
-      marker.link = ev.link;
 
       marker.on('click', () => {
         showDetails(ev, marker.getLatLng());
@@ -116,13 +115,23 @@ fetch('events.json')
 
 function showDetails(ev, latlng) {
   const details = document.getElementById('details');
+  const suggestions = findNearbySimilar(latlng, ev.vibe.toLowerCase(), 300);
+
+  let suggestionHtml = '';
+  if (suggestions.length > 0) {
+    suggestionHtml = `<strong>Similar nearby:</strong><ul>` +
+      suggestions.map(s => `<li>${s.name}</li>`).join('') + `</ul>`;
+  } else {
+    suggestionHtml = '<em>No similar spots nearby</em>';
+  }
+
   details.innerHTML = `
     <strong>${ev.name}</strong><br>
     Vibe: ${ev.vibe}<br>
     <a href="${ev.link}" target="_blank">View More</a><br>
     <button id="addToRoute">Add to Route</button>
     <button id="closeDetails">Close</button>
-    <div id="suggestions"></div>
+    ${suggestionHtml}
   `;
   details.style.display = 'block';
 
@@ -133,22 +142,15 @@ function showDetails(ev, latlng) {
   document.getElementById('closeDetails').addEventListener('click', () => {
     details.style.display = 'none';
   });
-
-  const suggestions = findNearbySimilar(latlng, ev.vibe.toLowerCase(), 500);
-  const suggestionsDiv = document.getElementById('suggestions');
-  if (suggestions.length) {
-    suggestionsDiv.innerHTML = `<br><strong>Nearby Similar Spots:</strong><ul>` +
-      suggestions.map(m => `<li><a href="${m.link}" target="_blank">${m.name}</a></li>`).join('') +
-      `</ul>`;
-  } else {
-    suggestionsDiv.innerHTML = `<br><em>No similar spots nearby.</em>`;
-  }
 }
 
-function findNearbySimilar(latlng, vibe, radius = 500) {
+function findNearbySimilar(latlng, vibeText, radius = 300) {
+  const vibeTags = vibeText.split(',').map(v => v.trim());
   return allMarkers.filter(marker => {
     const distance = latlng.distanceTo(marker.getLatLng());
-    return distance <= radius && marker.vibe.includes(vibe) && !latlng.equals(marker.getLatLng());
+    const markerVibe = marker.vibe;
+    const vibeMatch = vibeTags.some(tag => markerVibe.includes(tag));
+    return distance <= radius && vibeMatch && !latlng.equals(marker.getLatLng());
   }).slice(0, 3);
 }
 
