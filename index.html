@@ -145,7 +145,7 @@ function showDetails(ev, latlng) {
   }
 }
 
-function findNearbySimilar(latlng, vibe, radius = 300) {
+function findNearbySimilar(latlng, vibe, radius = 500) {
   return allMarkers.filter(marker => {
     const distance = latlng.distanceTo(marker.getLatLng());
     return distance <= radius && marker.vibe.includes(vibe) && !latlng.equals(marker.getLatLng());
