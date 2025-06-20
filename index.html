@@ -119,7 +119,7 @@ function showDetails(ev, latlng) {
 
   let suggestionHtml = '';
   if (suggestions.length > 0) {
-    suggestionHtml = `<strong>Similar nearby:</strong><ul>` +
+    suggestionHtml = `<strong>Also could be the move:</strong><ul>` +
       suggestions.map(s => `<li>${s.name}</li>`).join('') + `</ul>`;
   } else {
     suggestionHtml = '<em>No similar spots nearby</em>';
