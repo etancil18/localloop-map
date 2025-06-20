@@ -134,7 +134,7 @@ function showDetails(ev, latlng) {
     details.style.display = 'none';
   });
 
-  const suggestions = findNearbySimilar(latlng, ev.vibe.toLowerCase(), 300);
+  const suggestions = findNearbySimilar(latlng, ev.vibe.toLowerCase(), 500);
   const suggestionsDiv = document.getElementById('suggestions');
   if (suggestions.length) {
     suggestionsDiv.innerHTML = `<br><strong>Nearby Similar Spots:</strong><ul>` +
