@@ -1735,5 +1735,173 @@
     "lat": 40.72438215,
     "lon": -73.94842052,
     "link": "https://www.instagram.com/liseandvito/"
+  },
+  {
+    "name": "Maracuja",
+    "vibe": "Tapas, Pool Table, Natural Wine Dive Bar Vibes",
+    "lat": 40.7132401,
+    "lon": -73.9577771,
+    "link": "https://www.instagram.com/maracujabk/"
+  },
+  {
+    "name": "The Woods",
+    "vibe": "Hip, Nightlife, Dance Floor, Outdoor Patio, Social, Lively",
+    "lat": 40.7129071,
+    "lon": -73.9663175,
+    "link": "https://www.instagram.com/thewoodsbrooklyn/"
+  },
+  {
+    "name": "Adore",
+    "vibe": "Intimate, Date Night, Vinyl, Japanese, Natural Wine",
+    "lat": 40.7268711,
+    "lon": -73.987535,
+    "link": "https://www.instagram.com/bar.adore/"
+  },
+  {
+    "name": "The Monkey King",
+    "vibe": "Sleek, Social, Asian-Inspired, Wine Bar",
+    "lat": 40.7061629,
+    "lon": -73.9210971,
+    "link": "https://www.instagram.com/themonkeykingnyc/"
+  },
+  {
+    "name": "The Noble Brooklyn",
+    "vibe": "Cozy, Neighborhood bar, Wine Bar, Outdoor Seating",
+    "lat": 40.7286204,
+    "lon": -73.95442,
+    "link": "https://www.instagram.com/thenoblebk/"
+  },
+  {
+    "name": "Sereneco",
+    "vibe": "Elegant, Bright, Brunch Spot, Outdoor Seating, Cocktails",
+    "lat": 40.7303713,
+    "lon": -73.9578334,
+    "link": "https://www.instagram.com/sereneconyc/"
+  },
+  {
+    "name": "Cozy Royale",
+    "vibe": "Sandwiches, Burger, Hotdog, Laid-Back, Neighborhood Dining",
+    "lat": 40.7169346,
+    "lon": -73.9429324,
+    "link": "https://www.instagram.com/cozyroyalebk/"
+  },
+  {
+    "name": "Nowadays",
+    "vibe": "Outdoor, Nightlife, DJ, Dance, Daytime Events",
+    "lat": 40.6928669,
+    "lon": -73.9016974,
+    "link": "https://www.instagram.com/nowadaysnyc/"
+  },
+  {
+    "name": "Caffè Panna",
+    "vibe": "Charming, Artisanal, Ice Cream, Café",
+    "lat": 40.72437788,
+    "lon": -73.95469863,
+    "link": "https://www.instagram.com/caffepanna/"
+  },
+  {
+    "name": "Mắm",
+    "vibe": "Intimate, Authentic, Vietnamese Street Food, Outdoor Seating",
+    "lat": 40.7170163,
+    "lon": -73.99325241,
+    "link": "https://www.instagram.com/mam.nyc/"
+  },
+  {
+    "name": "Cosenza's Fish Market",
+    "vibe": "Not A Sit Down, Oyster, Seafood Market",
+    "lat": 40.8545359,
+    "lon": -73.88819948,
+    "link": "https://www.instagram.com/explore/locations/8494296/cosenzas-fish-mkt/"
+  },
+  {
+    "name": "Strong Rope Brewery Red Hook",
+    "vibe": "Craft beer, Casual, Waterfront vibe",
+    "lat": 40.6772792,
+    "lon": -74.0187905,
+    "link": "https://www.instagram.com/strongropebrewery/"
+  },
+  {
+    "name": "Roy's Fish Market",
+    "vibe": "Local, No-Frills, Seafood Spot, Sushi",
+    "lat": 40.76172155,
+    "lon": -73.9601005,
+    "link": "https://www.instagram.com/explore/locations/362855481/roys-fish-market/"
+  },
+  {
+    "name": "Le Gratin",
+    "vibe": "Sophisticated, French Bistro, Date Night",
+    "lat": 40.711274,
+    "lon": -74.0060676,
+    "link": "https://www.instagram.com/legratinnyc/"
+  },
+  {
+    "name": "Ella Funt",
+    "vibe": "Cozy, Cocktails, Hip, Group Dinner, Vinyl",
+    "lat": 40.7262314,
+    "lon": -73.9900046,
+    "link": "https://www.instagram.com/ellafunt.nyc/"
+  },
+  {
+    "name": "Troost",
+    "vibe": "Laid-back, Cocktails, Neighborhood Bar, Live Music",
+    "lat": 40.7334503,
+    "lon": -73.9549611,
+    "link": "https://www.instagram.com/troostnyc/"
+  },
+  {
+    "name": "Bar Madonna",
+    "vibe": "Trendy, Italian-inspired, Cocktails, Date Night",
+    "lat": 40.7142028,
+    "lon": -73.9556881,
+    "link": "https://www.instagram.com/barmadonnabk/"
+  },
+  {
+    "name": "Casetta",
+    "vibe": "Charming, Wine Bar, Café, European",
+    "lat": 40.715807,
+    "lon": -73.990317,
+    "link": "https://www.instagram.com/casetta.ny/"
+  },
+  {
+    "name": "Ketchy Shuby",
+    "vibe": "Hip, Group Dinner, Lively, Eclectic Lounge, Dance, DJ, Hidden Party",
+    "lat": 40.7210382,
+    "lon": -73.9977804,
+    "link": "https://www.instagram.com/ketchyshuby.nyc/"
+  },
+  {
+    "name": "Arlo Williamsburg",
+    "vibe": "Nightlife, DJ, Swimming Pool, Rooftop, Skyline Views",
+    "lat": 40.71304885,
+    "lon": -73.96577513,
+    "link": "https://www.instagram.com/arlowilliamsburg/tagged/"
+  },
+  {
+    "name": "Westlight",
+    "vibe": "Upscale, Rooftop, Skyline Views, Cocktails, Social, Restaurant",
+    "lat": 40.722297,
+    "lon": -73.9565396,
+    "link": "https://www.instagram.com/westlightnyc/"
+  },
+  {
+    "name": "Unveiled",
+    "vibe": "Chic, Nightlife, DJ, Exclusive, Club",
+    "lat": 40.7225704,
+    "lon": -73.9566575,
+    "link": "https://www.instagram.com/unveiled_nyc/"
+  },
+  {
+    "name": "Good Room",
+    "vibe": "Nightlife, DJ, Dance, Multiple Rooms, Club",
+    "lat": 40.7269085,
+    "lon": -73.9528103,
+    "link": "https://www.instagram.com/goodroombk/"
+  },
+  {
+    "name": "Bar Milagro",
+    "vibe": "Hidden Gem, Cozy, Agave Spirits-Focused, Cocktails, Lively",
+    "lat": 40.7115944,
+    "lon": -73.9673794,
+    "link": "https://www.instagram.com/barmilagrobk/"
   }
 ]
