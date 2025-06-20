@@ -103,6 +103,7 @@ fetch('events.json')
 
       marker.vibe = ev.vibe.toLowerCase();
       marker.name = ev.name.toLowerCase();
+      marker.link = ev.link;
 
       marker.on('click', () => {
         showDetails(ev, marker.getLatLng());
@@ -121,6 +122,7 @@ function showDetails(ev, latlng) {
     <a href="${ev.link}" target="_blank">View More</a><br>
     <button id="addToRoute">Add to Route</button>
     <button id="closeDetails">Close</button>
+    <div id="suggestions"></div>
   `;
   details.style.display = 'block';
 
@@ -131,6 +133,23 @@ function showDetails(ev, latlng) {
   document.getElementById('closeDetails').addEventListener('click', () => {
     details.style.display = 'none';
   });
+
+  const suggestions = findNearbySimilar(latlng, ev.vibe.toLowerCase(), 300);
+  const suggestionsDiv = document.getElementById('suggestions');
+  if (suggestions.length) {
+    suggestionsDiv.innerHTML = `<br><strong>Nearby Similar Spots:</strong><ul>` +
+      suggestions.map(m => `<li><a href="${m.link}" target="_blank">${m.name}</a></li>`).join('') +
+      `</ul>`;
+  } else {
+    suggestionsDiv.innerHTML = `<br><em>No similar spots nearby.</em>`;
+  }
+}
+
+function findNearbySimilar(latlng, vibe, radius = 300) {
+  return allMarkers.filter(marker => {
+    const distance = latlng.distanceTo(marker.getLatLng());
+    return distance <= radius && marker.vibe.includes(vibe) && !latlng.equals(marker.getLatLng());
+  }).slice(0, 3);
 }
 
 function addPointToRoute(latlng) {
@@ -167,7 +186,7 @@ function applyFilters() {
     if (vibe && vibeMap[vibe]) {
       vibeMatch = vibeMap[vibe].some(keyword => marker.vibe.includes(keyword));
     }
-    
+
     const searchMatch = !query || marker.name.includes(query) || marker.vibe.includes(query);
 
     if (vibeMatch && searchMatch) {
