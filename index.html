@@ -115,7 +115,7 @@ fetch('events.json')
 
 function showDetails(ev, latlng) {
   const details = document.getElementById('details');
-  const suggestions = findNearbySimilar(latlng, ev.vibe.toLowerCase(), 300);
+  const suggestions = findNearbySimilar(latlng, ev.vibe.toLowerCase(), 350);
 
   let suggestionHtml = '';
   if (suggestions.length > 0) {
@@ -144,7 +144,7 @@ function showDetails(ev, latlng) {
   });
 }
 
-function findNearbySimilar(latlng, vibeText, radius = 300) {
+function findNearbySimilar(latlng, vibeText, radius = 350) {
   const vibeTags = vibeText.split(',').map(v => v.trim());
   return allMarkers.filter(marker => {
     const distance = latlng.distanceTo(marker.getLatLng());
