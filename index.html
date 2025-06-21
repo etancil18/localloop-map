@@ -32,10 +32,6 @@
     #keyword-input { top: 50px; left: 50px; }
     #neighborhood-input { top: 50px; left: 220px; }
     #generateRoute { top: 50px; left: 390px; }
-    .custom-marker-icon {
-      background: transparent !important;
-      border: none !important;
-    }
   </style>
 </head>
 <body>
@@ -91,7 +87,6 @@
 
 <script>
 const map = L.map('map').setView([40.72, -73.98], 12);
-
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
@@ -108,6 +103,10 @@ map.addLayer(markerCluster);
 const allMarkers = [];
 let selectedPoints = [];
 let currentRoute = null;
+let enlargedMarkers = new Set();
+
+const defaultIcon = () => L.divIcon({ className: '', html: '📍', iconSize: [30, 30], iconAnchor: [15, 15] });
+const enlargedIcon = () => L.divIcon({ className: '', html: '📍', iconSize: [50, 50], iconAnchor: [25, 25] });
 
 const vibeMap = {
   jazz: ["jazz"],
@@ -125,19 +124,12 @@ fetch('events.json')
   .then(res => res.json())
   .then(events => {
     events.forEach(ev => {
-      const marker = L.marker([ev.lat, ev.lon], {
-        icon: L.divIcon({
-          className: 'custom-marker-icon',
-          html: '📍',
-          iconSize: [50, 50],
-          iconAnchor: [5, 5]
-        })
-      });
-
+      const marker = L.marker([ev.lat, ev.lon], { icon: defaultIcon() });
       marker.vibe = ev.vibe.toLowerCase();
       marker.name = ev.name.toLowerCase();
 
       marker.on('click', () => {
+        enlargeMarker(marker);
         showDetails(ev, marker.getLatLng());
       });
 
@@ -146,17 +138,27 @@ fetch('events.json')
     });
   });
 
+function enlargeMarker(marker) {
+  marker.setIcon(enlargedIcon());
+  enlargedMarkers.add(marker);
+}
+
+function resetMarker(marker) {
+  marker.setIcon(defaultIcon());
+  enlargedMarkers.delete(marker);
+}
+
+function resetAllEnlargedMarkers() {
+  enlargedMarkers.forEach(m => resetMarker(m));
+}
+
 function showDetails(ev, latlng) {
   const details = document.getElementById('details');
   const suggestions = findNearbySimilar(latlng, ev.vibe.toLowerCase(), 350);
 
-  let suggestionHtml = '';
-  if (suggestions.length > 0) {
-    suggestionHtml = `<strong>Also could be the move:</strong><ul>` +
-      suggestions.map(s => `<li>${s.name}</li>`).join('') + `</ul>`;
-  } else {
-    suggestionHtml = '<em>No similar spots nearby</em>';
-  }
+  let suggestionHtml = suggestions.length > 0 
+    ? `<strong>Also could be the move:</strong><ul>${suggestions.map(s => `<li>${s.name}</li>`).join('')}</ul>`
+    : '<em>No similar spots nearby</em>';
 
   details.innerHTML = `
     <strong>${ev.name}</strong><br>
@@ -171,7 +173,6 @@ function showDetails(ev, latlng) {
   document.getElementById('addToRoute').addEventListener('click', () => {
     addPointToRoute(latlng);
   });
-
   document.getElementById('closeDetails').addEventListener('click', () => {
     details.style.display = 'none';
   });
@@ -181,8 +182,7 @@ function findNearbySimilar(latlng, vibeText, radius = 350) {
   const vibeTags = vibeText.split(',').map(v => v.trim());
   return allMarkers.filter(marker => {
     const distance = latlng.distanceTo(marker.getLatLng());
-    const markerVibe = marker.vibe;
-    const vibeMatch = vibeTags.some(tag => markerVibe.includes(tag));
+    const vibeMatch = vibeTags.some(tag => marker.vibe.includes(tag));
     return distance <= radius && vibeMatch && !latlng.equals(marker.getLatLng());
   }).slice(0, 3);
 }
@@ -193,13 +193,12 @@ function addPointToRoute(latlng) {
     return;
   }
   selectedPoints.push(latlng);
+  enlargeMarker(findMarkerByLatLng(latlng));
   updateRoute();
 }
 
 function updateRoute() {
-  if (currentRoute) {
-    map.removeControl(currentRoute);
-  }
+  if (currentRoute) map.removeControl(currentRoute);
   if (selectedPoints.length >= 2) {
     currentRoute = L.Routing.control({
       waypoints: selectedPoints,
@@ -208,22 +207,31 @@ function updateRoute() {
   }
 }
 
+function findMarkerByLatLng(latlng) {
+  return allMarkers.find(m => m.getLatLng().equals(latlng));
+}
+
 document.getElementById('generateRoute').addEventListener('click', () => {
   const keyword = document.getElementById('keyword-input').value.toLowerCase();
-  const neighborhood = document.getElementById('neighborhood-input').value;
+  const neighborhood = document.getElementById('neighborhood-input').value.toLowerCase();
   if (!keyword || !neighborhood) {
     alert('Please enter both a keyword and a neighborhood.');
     return;
   }
   const matches = allMarkers.filter(marker =>
-    (marker.vibe.includes(keyword) || marker.name.includes(keyword)) && marker.name.includes(neighborhood.toLowerCase())
+    (marker.vibe.includes(keyword) || marker.name.includes(keyword)) && marker.name.includes(neighborhood)
   );
   const sorted = matches.slice(0, 3);
   if (sorted.length === 0) {
     alert('No matching places found.');
     return;
   }
-  selectedPoints = sorted.map(m => m.getLatLng());
+  selectedPoints = [];
+  resetAllEnlargedMarkers();
+  sorted.forEach(m => {
+    selectedPoints.push(m.getLatLng());
+    enlargeMarker(m);
+  });
   updateRoute();
   map.fitBounds(L.featureGroup(sorted).getBounds());
 });
@@ -253,6 +261,7 @@ document.getElementById('clearRoute').addEventListener('click', () => {
     currentRoute = null;
   }
   selectedPoints = [];
+  resetAllEnlargedMarkers();
 });
 
 document.getElementById('removeLastPoint').addEventListener('click', () => {
@@ -260,7 +269,8 @@ document.getElementById('removeLastPoint').addEventListener('click', () => {
     alert('No points to remove.');
     return;
   }
-  selectedPoints.pop();
+  const removed = selectedPoints.pop();
+  resetMarker(findMarkerByLatLng(removed));
   updateRoute();
 });
 </script>
