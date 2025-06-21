@@ -22,14 +22,13 @@
       display: block; margin-top: 5px; background: #ccc;
       border: none; padding: 5px; cursor: pointer;
     }
-    #vibeFilter, #map-search, #clearRoute, #removeLastPoint, #keyword-input, #neighborhood-input, #generateRoute, #exportGoogle {
+    #vibeFilter, #map-search, #clearRoute, #removeLastPoint, #keyword-input, #neighborhood-input, #generateRoute {
       position: absolute; z-index: 1000; font-size: 14px; padding: 5px;
     }
     #map-search { top: 10px; left: 50px; width: 250px; }
     #vibeFilter { top: 10px; left: 330px; }
-    #removeLastPoint { top: 10px; right: 550px; }
-    #clearRoute { top: 10px; right: 450px; }
-    #exportGoogle { top: 10px; right: 350px; }
+    #removeLastPoint { top: 10px; right: 450px; }
+    #clearRoute { top: 10px; right: 350px; }
     #keyword-input { top: 50px; left: 50px; }
     #neighborhood-input { top: 50px; left: 220px; }
     #generateRoute { top: 50px; left: 390px; }
@@ -78,7 +77,6 @@
 <button id="generateRoute">Generate Mini Crawl</button>
 <button id="removeLastPoint">Remove Last Point</button>
 <button id="clearRoute">Clear Route</button>
-<button id="exportGoogle">Export Route</button>
 
 <div id="map"></div>
 <div id="details"><strong>Click a pin to see details</strong></div>
@@ -176,6 +174,7 @@ function showDetails(ev, latlng) {
     Vibe: ${ev.vibe}<br>
     <a href="${ev.link}" target="_blank">View More</a><br>
     <button id="addToRoute">Add to Route</button>
+    <button id="exportGooglePopup">Export Route to Google Maps</button>
     <button id="closeDetails">Close</button>
     ${suggestionHtml}
   `;
@@ -184,6 +183,17 @@ function showDetails(ev, latlng) {
   document.getElementById('addToRoute').addEventListener('click', () => {
     addPointToRoute(latlng);
   });
+
+  document.getElementById('exportGooglePopup').addEventListener('click', () => {
+    if (selectedPoints.length < 2) {
+      alert('Select at least 2 points to export a route.');
+      return;
+    }
+    const base = "https://www.google.com/maps/dir/";
+    const path = selectedPoints.map(p => `${p.lat},${p.lng}`).join('/');
+    window.open(base + path, '_blank');
+  });
+
   document.getElementById('closeDetails').addEventListener('click', () => {
     details.style.display = 'none';
   });
@@ -245,16 +255,6 @@ document.getElementById('generateRoute').addEventListener('click', () => {
   });
   updateRoute();
   map.fitBounds(L.featureGroup(sorted).getBounds());
-});
-
-document.getElementById('exportGoogle').addEventListener('click', () => {
-  if (selectedPoints.length < 2) {
-    alert('Select at least 2 points to export a route.');
-    return;
-  }
-  const base = "https://www.google.com/maps/dir/";
-  const path = selectedPoints.map(p => `${p.lat},${p.lng}`).join('/');
-  window.open(base + path, '_blank');
 });
 
 document.getElementById('vibeFilter').addEventListener('change', applyFilters);
