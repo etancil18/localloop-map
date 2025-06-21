@@ -105,8 +105,18 @@ let selectedPoints = [];
 let currentRoute = null;
 let enlargedMarkers = new Set();
 
-const defaultIcon = () => L.divIcon({ className: '', html: '📍', iconSize: [30, 30], iconAnchor: [15, 15] });
-const enlargedIcon = () => L.divIcon({ className: '', html: '📍', iconSize: [50, 50], iconAnchor: [25, 25] });
+const defaultIcon = () => L.divIcon({ 
+  className: '', 
+  html: '📍', 
+  iconSize: [30, 30], 
+  iconAnchor: [15, 30] 
+});
+const enlargedIcon = () => L.divIcon({ 
+  className: '', 
+  html: '📍', 
+  iconSize: [50, 50], 
+  iconAnchor: [25, 50] 
+});
 
 const vibeMap = {
   jazz: ["jazz"],
@@ -129,6 +139,7 @@ fetch('events.json')
       marker.name = ev.name.toLowerCase();
 
       marker.on('click', () => {
+        resetAllEnlargedMarkers();
         enlargeMarker(marker);
         showDetails(ev, marker.getLatLng());
       });
@@ -155,7 +166,6 @@ function resetAllEnlargedMarkers() {
 function showDetails(ev, latlng) {
   const details = document.getElementById('details');
   const suggestions = findNearbySimilar(latlng, ev.vibe.toLowerCase(), 350);
-
   let suggestionHtml = suggestions.length > 0 
     ? `<strong>Also could be the move:</strong><ul>${suggestions.map(s => `<li>${s.name}</li>`).join('')}</ul>`
     : '<em>No similar spots nearby</em>';
