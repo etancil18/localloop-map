@@ -22,16 +22,16 @@
       display: block; margin-top: 5px; background: #ccc;
       border: none; padding: 5px; cursor: pointer;
     }
-    #vibeFilter, #map-search, #clearRoute, #removeLastPoint {
+    #vibeFilter, #map-search, #clearRoute, #removeLastPoint, #keyword-input, #neighborhood-input, #generateRoute {
       position: absolute; z-index: 1000; font-size: 14px; padding: 5px;
     }
     #map-search { top: 10px; left: 50px; width: 250px; }
     #vibeFilter { top: 10px; left: 330px; }
+    #keyword-input { top: 50px; right: 320px; }
+    #neighborhood-input { top: 50px; right: 150px; }
+    #generateRoute { top: 50px; right: 10px; }
     #removeLastPoint { top: 10px; right: 450px; }
     #clearRoute { top: 10px; right: 350px; }
-    #keyword-input { top: 50px; right: 320px; position: absolute; z-index:1000; padding:5px; }
-    #neighborhood-input { top: 50px; right: 150px; position: absolute; z-index:1000; padding:5px; }
-    #generateRoute { top: 50px; right: 10px; position: absolute; z-index:1000; padding:5px; }
   </style>
 </head>
 <body>
@@ -50,7 +50,30 @@
   <option value="wine">Wine</option>
 </select>
 <input id="keyword-input" type="text" placeholder="Enter keyword">
-<input id="neighborhood-input" type="text" placeholder="Enter neighborhood">
+<select id="neighborhood-input">
+  <option value="">Select Neighborhood</option>
+  <option>Alphabet City</option>
+  <option>BedStuy</option>
+  <option>Bushwick</option>
+  <option>Chelsea</option>
+  <option>Chinatown</option>
+  <option>Clinton Hill</option>
+  <option>Downtown Brooklyn</option>
+  <option>Dumbo</option>
+  <option>East Village</option>
+  <option>Gramercy</option>
+  <option>Greenpoint</option>
+  <option>Greenwich Village</option>
+  <option>Long Island City</option>
+  <option>Lower East Side</option>
+  <option>Midtown</option>
+  <option>SoHo</option>
+  <option>Tribeca</option>
+  <option>Upper East Side</option>
+  <option>Upper West Side</option>
+  <option>West Village</option>
+  <option>Williamsburg</option>
+</select>
 <button id="generateRoute">Find & Build Route</button>
 <button id="removeLastPoint">Remove Last Point</button>
 <button id="clearRoute">Clear Route</button>
