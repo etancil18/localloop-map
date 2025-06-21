@@ -105,17 +105,17 @@ let selectedPoints = [];
 let currentRoute = null;
 let enlargedMarkers = new Set();
 
-const defaultIcon = () => L.divIcon({ 
-  className: '', 
-  html: '📍', 
-  iconSize: [30, 30], 
-  iconAnchor: [15, 30] 
+// Use icon images (replace with your own 📍 image if you want)
+const defaultIcon = L.icon({
+  iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/RedDot.svg',
+  iconSize: [30, 30],
+  iconAnchor: [15, 30]
 });
-const enlargedIcon = () => L.divIcon({ 
-  className: '', 
-  html: '📍', 
-  iconSize: [50, 50], 
-  iconAnchor: [25, 50] 
+
+const enlargedIcon = L.icon({
+  iconUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/RedDot.svg',
+  iconSize: [50, 50],
+  iconAnchor: [25, 50]
 });
 
 const vibeMap = {
@@ -134,7 +134,7 @@ fetch('events.json')
   .then(res => res.json())
   .then(events => {
     events.forEach(ev => {
-      const marker = L.marker([ev.lat, ev.lon], { icon: defaultIcon() });
+      const marker = L.marker([ev.lat, ev.lon], { icon: defaultIcon });
       marker.vibe = ev.vibe.toLowerCase();
       marker.name = ev.name.toLowerCase();
 
@@ -150,12 +150,12 @@ fetch('events.json')
   });
 
 function enlargeMarker(marker) {
-  marker.setIcon(enlargedIcon());
+  marker.setIcon(enlargedIcon);
   enlargedMarkers.add(marker);
 }
 
 function resetMarker(marker) {
-  marker.setIcon(defaultIcon());
+  marker.setIcon(defaultIcon);
   enlargedMarkers.delete(marker);
 }
 
